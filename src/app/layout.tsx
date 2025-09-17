@@ -180,9 +180,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           }}
         />
 
-        {/* Facebook Pixel */}
+        {/* Meta Pixel Code */}
         <Script
-          id="facebook-pixel"
+          id="meta-pixel"
           strategy="afterInteractive"
           dangerouslySetInnerHTML={{
             __html: `
@@ -194,11 +194,23 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
               t.src=v;s=b.getElementsByTagName(e)[0];
               s.parentNode.insertBefore(t,s)}(window, document,'script',
               'https://connect.facebook.net/en_US/fbevents.js');
-              fbq('init', '2059684518101612'); // Facebook Pixel ID
+              fbq('init', '2059684518101612');
               fbq('track', 'PageView');
             `,
           }}
         />
+        
+        {/* Meta Pixel Noscript */}
+        <noscript>
+          <img 
+            height="1" 
+            width="1" 
+            style={{ display: "none" }}
+            src="https://www.facebook.com/tr?id=2059684518101612&ev=PageView&noscript=1"
+            alt=""
+          />
+        </noscript>
+        {/* End Meta Pixel Code */}
 
         {/* Facebook Conversions API - Función para enviar eventos */}
         <Script
