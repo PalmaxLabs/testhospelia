@@ -248,125 +248,85 @@ export default function Header() {
               className="fixed inset-0 bg-gradient-to-br from-blue-900/95 via-purple-900/95 to-blue-800/95 backdrop-blur-md z-50 md:hidden"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
-              onClick={() => setIsOpen(false)}
             />
-            
-            {/* Contenido del menú */}
-            <motion.div
-              className="fixed inset-0 z-50 md:hidden flex flex-col"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
+
+            {/* Menú */}
+            <motion.nav
+              className="fixed top-0 left-0 right-0 z-50 md:hidden"
+              initial={{ y: -100 }}
+              animate={{ y: 0 }}
+              exit={{ y: -100 }}
+              transition={{ type: 'spring', stiffness: 120, damping: 15 }}
             >
-              {/* Header del menú móvil */}
-              <div className="flex justify-between items-center p-6 bg-white/10 backdrop-blur-sm border-b border-white/20">
-                <Link href="/" onClick={() => setIsOpen(false)}>
-                  <img src="/img/logo-hospelia.webp" alt="logo" className="w-auto h-8" />
-                </Link>
-                <motion.button
-                  onClick={() => setIsOpen(false)}
-                  className="p-2 rounded-full bg-white/20 text-white hover:bg-white/30 transition-colors"
-                  whileTap={{ scale: 0.9 }}
-                >
-                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </motion.button>
+              <div className="backdrop-blur-md bg-white/90 shadow-lg border-b border-gray-200/50">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                  <div className="flex justify-between items-center py-3">
+                    <Link href="/" className="text-blue-600 font-bold text-xl">
+                      <img src="/img/logo-hospelia.webp" alt="logo" className="w-auto h-8" />
+                    </Link>
+                    <motion.button 
+                      onClick={() => setIsOpen(false)}
+                      className="p-3 rounded-full bg-white/10 backdrop-blur-sm text-gray-700 hover:text-blue-600 hover:bg-blue-50 focus:outline-none transition-all duration-200 border border-gray-200/50"
+                      whileTap={{ scale: 0.95 }}
+                      whileHover={{ scale: 1.05 }}
+                    >
+                      <span className="sr-only">Cerrar menú</span>
+                      <HamburgerIcon isOpen={isOpen} />
+                    </motion.button>
+                  </div>
+                </div>
               </div>
 
-              {/* Contenido principal del menú */}
-              <div className="flex-1 flex flex-col justify-center px-8 py-12">
-                {/* Links de navegación */}
-                <nav className="space-y-6 mb-12">
-                  {navLinks.map((link, index) => (
-                    <motion.div
-                      key={link.href}
-                      initial={{ opacity: 0, x: -50 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ 
-                        delay: index * 0.1 + 0.2,
-                        type: "spring",
-                        stiffness: 100,
-                        damping: 15 
-                      }}
-                    >
-                      <Link
-                        href={link.href}
-                        onClick={() => setIsOpen(false)}
-                        className="flex items-center space-x-4 p-4 rounded-2xl bg-white/10 backdrop-blur-sm hover:bg-white/20 transition-all duration-200 text-white group"
+              <div className="bg-white/95 backdrop-blur-md shadow-xl">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-6">
+                  <div className="grid grid-cols-1 gap-2 pt-4">
+                    {navLinks.map((link) => (
+                      <motion.div
+                        key={link.href}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.2 }}
                       >
-                        <div className="flex items-center justify-center w-12 h-12 rounded-full bg-white/20 group-hover:bg-white/30 transition-colors">
-                          {link.icon}
-                        </div>
-                        <span className="text-xl font-semibold">{link.label}</span>
-                        <motion.div
-                          className="ml-auto"
-                          initial={{ x: -10, opacity: 0 }}
-                          whileHover={{ x: 0, opacity: 1 }}
-                          transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                        <Link 
+                          href={link.href}
+                          onClick={() => setIsOpen(false)}
+                          className="flex items-center justify-between px-4 py-3 rounded-lg hover:bg-blue-50 transition-colors text-gray-700"
                         >
-                          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <span className="text-base font-medium">{link.label}</span>
+                          <svg className="w-5 h-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                           </svg>
-                        </motion.div>
-                      </Link>
-                    </motion.div>
-                  ))}
-                </nav>
-
-                {/* Botón de favoritos en móvil pequeño */}
-                <div className="sm:hidden mb-8">
-                  <FavoritesCounter />
-                </div>
-
-                {/* Selector de idioma/moneda */}
-                <motion.div
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.5 }}
-                  className="mb-8"
-                >
-                  <div className="bg-white/20 backdrop-blur-md rounded-2xl p-4 border border-white/30">
-                    <LanguageCurrencySelector />
+                        </Link>
+                      </motion.div>
+                    ))}
                   </div>
-                </motion.div>
 
-                {/* Botón CTA */}
-                <motion.button
-                  className="w-full py-4 px-8 bg-gradient-to-r from-white to-blue-50 text-blue-600 font-bold text-lg rounded-2xl shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center space-x-3"
-                  onClick={() => {
-                    setIsOpen(false);
-                    handleReservaClick();
-                  }}
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.6 }}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
-                  <span>Reserva ahora</span>
-                </motion.button>
-              </div>
-
-              {/* Footer del menú */}
-              <div className="p-6 bg-white/5 backdrop-blur-sm border-t border-white/10">
-                <div className="text-center text-white/70 text-sm">
-                  <p>© 2024 Hospelia. Todos los derechos reservados.</p>
+                  {/* CTA móvil */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="mt-4 px-4"
+                  >
+                    <button 
+                      onClick={() => { setIsOpen(false); handleReservaClick(); }}
+                      className="w-full px-4 py-3 rounded-full bg-gradient-to-r from-blue-500 to-blue-700 text-white font-medium shadow-md hover:from-blue-600 hover:to-blue-800 transition-all"
+                    >
+                      Reservar ahora
+                    </button>
+                  </motion.div>
                 </div>
               </div>
-            </motion.div>
+            </motion.nav>
           </>
         )}
       </AnimatePresence>
 
-      {/* Popup de Reserva */}
-      <PopupReserva isOpen={showPopup} onClose={() => setShowPopup(false)} popupId={22494} />
+      {/* Popup de reserva - envuelto en Suspense para cumplir con useSearchParams */}
+      <React.Suspense fallback={null}>
+        <PopupReserva isOpen={showPopup} onClose={() => setShowPopup(false)} popupId={22494} />
+      </React.Suspense>
     </>
   );
-} 
+}
