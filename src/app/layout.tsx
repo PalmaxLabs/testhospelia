@@ -3,12 +3,11 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { LocaleProvider } from "@/contexts/LocaleContext";
-import WhatsAppButton from "./components/WhatsAppButton";
-import Chatbot from "./components/Chatbot";
 import { LanguageProvider } from '@/contexts/LanguageContext';
 import { CurrencyProvider } from '@/contexts/CurrencyContext';
 import { RecommendationProvider } from '@/contexts/RecommendationContext';
 import AppInitializer from "@/components/AppInitializer";
+import DeferredWidgets from "./components/DeferredWidgets";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,18 +22,32 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Hospelia.co | Alojamientos en Cali",
-  description: "Encuentra apartamentos amoblados, céntricos y con todas las comodidades en Cali.",
-  keywords: "apartamentos, alojamientos, Cali, amoblados, hospedaje",
+  title: "Hospelia.co | Alojamientos en Cali con apartamentos amoblados",
+  description:
+    "Encuentra alojamientos y apartamentos amoblados en Cali: ubicaciones céntricas, comodidades completas y reservas seguras para estancias cortas y largas.",
+  keywords: "apartamentos, alojamientos, Cali, amoblados, hospedaje, estancias cortas, reservas",
   openGraph: {
     title: "Hospelia.co | Alojamientos en Cali",
-    description: "Encuentra apartamentos amoblados, céntricos y con todas las comodidades en Cali.",
+    description:
+      "Encuentra alojamientos y apartamentos amoblados en Cali: ubicaciones céntricas, comodidades completas y reservas seguras.",
     type: "website",
     locale: "es_CO",
+    url: "https://hospelia.co/",
   },
   robots: {
     index: true,
     follow: true,
+  },
+  alternates: {
+    canonical: "https://hospelia.co/",
+    languages: {
+      "es-CO": "https://hospelia.co/",
+      "x-default": "https://hospelia.co/",
+    },
+  },
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
   },
 };
 
@@ -79,10 +92,59 @@ export default function RootLayout({
 
         <meta charSet="utf-8" />
         {/* Ahrefs site verification */}
-        <meta name="ahrefs-site-verification" content="d38b90f794d34e4f448cd4a6a012383e96b4dade508d2f76817a058989e5d842" />
+        <meta
+          name="ahrefs-site-verification"
+          content="d38b90f794d34e4f448cd4a6a012383e96b4dade508d2f76817a058989e5d842"
+        />
+
+        {/* JSON-LD: Organization */}
+        <Script
+          id="schema-org-organization"
+          type="application/ld+json"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'Organization',
+              name: 'Hospelia',
+              url: 'https://hospelia.co/',
+              logo: 'https://hospelia.co/img/logo-hospelia.webp',
+              sameAs: [
+                'https://www.facebook.com/hospelia',
+                'https://www.instagram.com/hospelia',
+                'https://www.linkedin.com/company/hospelia',
+                'https://x.com/hospelia',
+                'https://www.youtube.com/@hospelia'
+              ]
+            }),
+          }}
+        />
+        {/* JSON-LD: Website */}
+        <Script
+          id="schema-org-website"
+          type="application/ld+json"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'WebSite',
+              name: 'Hospelia',
+              url: 'https://hospelia.co/',
+              potentialAction: {
+                '@type': 'SearchAction',
+                target: 'https://hospelia.co/alojamientos?query={search_term_string}',
+                'query-input': 'required name=search_term_string'
+              }
+            }),
+          }}
+        />
 
         {/* Ahrefs Web Analytics */}
-        <script src="https://analytics.ahrefs.com/analytics.js" data-key="+KTC6G4Kj1NHAuKA/N3UtA" async></script>
+        <script
+          src="https://analytics.ahrefs.com/analytics.js"
+          data-key="+KTC6G4Kj1NHAuKA/N3UtA"
+          async
+        ></script>
       </head>
       <body className="antialiased">
         {/* Google Tag Manager */}
@@ -92,7 +154,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+j=d.createElement(s),dl=l!='dataLayer'?"&l="+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','GTM-ND6BWZ2P');`,
           }}
@@ -122,8 +184,19 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           </CurrencyProvider>
         </LanguageProvider>
 
-        <WhatsAppButton />
-        <Chatbot />
+        {/* Deferred client-only widgets to improve INP/TBT */}
+        <DeferredWidgets />
+
+        {/* Minimal Social Links Footer */}
+        <footer className="mt-8 p-4 text-sm text-center text-gray-500">
+          <div className="flex flex-wrap gap-4 justify-center">
+            <a href="https://www.facebook.com/hospelia" target="_blank" rel="noopener noreferrer">Facebook</a>
+            <a href="https://www.instagram.com/hospelia" target="_blank" rel="noopener noreferrer">Instagram</a>
+            <a href="https://www.linkedin.com/company/hospelia" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+            <a href="https://x.com/hospelia" target="_blank" rel="noopener noreferrer">X</a>
+            <a href="https://www.youtube.com/@hospelia" target="_blank" rel="noopener noreferrer">YouTube</a>
+          </div>
+        </footer>
 
         {/* Google Analytics optimizado con next/script */}
         <Script
@@ -250,27 +323,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                 const eventData = {
                   data: [{
                     event_name: "Purchase",
-                    event_time: Math.floor(Date.now() / 1000),
-                    action_source: "website",
-                    user_data: {
-                      em: purchaseData.email ? [purchaseData.email] : [null],
-                      ph: purchaseData.phone ? [purchaseData.phone] : [null]
-                    },
-                    attribution_data: {
-                      attribution_share: "0.3"
-                    },
-                    custom_data: {
-                      currency: purchaseData.currency || "USD",
-                      value: purchaseData.value || "0"
-                    },
-                    original_event_data: {
-                      event_name: "Purchase",
-                      event_time: Math.floor(Date.now() / 1000)
-                    }
                   }]
                 };
-                
-                return await window.sendFacebookConversion(eventData);
+                return window.sendFacebookConversion(eventData);
               };
             `,
           }}
