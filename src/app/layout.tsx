@@ -78,6 +78,8 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://wp.hospelia.co" />
 
         <meta charSet="utf-8" />
+        {/* Ahrefs site verification */}
+        <meta name="ahrefs-site-verification" content="d38b90f794d34e4f448cd4a6a012383e96b4dade508d2f76817a058989e5d842" />
 
         {/* Ahrefs Web Analytics */}
         <script src="https://analytics.ahrefs.com/analytics.js" data-key="+KTC6G4Kj1NHAuKA/N3UtA" async></script>
@@ -134,7 +136,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           dangerouslySetInnerHTML={{
             __html: `
               window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
+              function gtag(){dataLayer.push(arguments);} 
               gtag('js', new Date());
               gtag('config', 'AW-943201081', {
                 page_path: window.location.pathname,
@@ -174,7 +176,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           dangerouslySetInnerHTML={{
             __html: `
               window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
+              function gtag(){dataLayer.push(arguments);} 
               gtag('js', new Date());
               gtag('config', 'G-24KSR9DCWR');
             `,
