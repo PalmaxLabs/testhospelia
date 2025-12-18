@@ -62,9 +62,6 @@ const nextConfig: NextConfig = {
     ]
   },
 
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -72,28 +69,6 @@ const nextConfig: NextConfig = {
   // Compresión
   compress: true,
   
-  // Output estático donde sea posible
-  output: 'standalone',
-  
-  // Reducir el bundle size
-  webpack: (config, { dev, isServer }) => {
-    if (!dev && !isServer) {
-      // Optimización de bundle en producción
-      config.optimization.splitChunks = {
-        chunks: 'all',
-        cacheGroups: {
-          vendor: {
-            test: /[\\/]node_modules[\\/]/,
-            name: 'vendors',
-            priority: 20,
-            chunks: 'all',
-          },
-        },
-      };
-    }
-    return config;
-  },
-
   // Configuración de redirects para SEO
   async redirects() {
     return [

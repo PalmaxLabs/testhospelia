@@ -11,7 +11,8 @@ export async function generateStaticParams() {
   return categories.map(c => ({ categoria: c }))
 }
 
-export async function generateMetadata({ params }: { params: { categoria: string } }): Promise<Metadata> {
+export async function generateMetadata(props: { params: Promise<{ categoria: string }> }): Promise<Metadata> {
+  const params = await props.params;
   const title = `Blog categoría: ${params.categoria}`
   const url = `https://hospelia.co/blog/categoria/${params.categoria}`
   return { title, description: 'Artículos por categoría', alternates: { canonical: url } }

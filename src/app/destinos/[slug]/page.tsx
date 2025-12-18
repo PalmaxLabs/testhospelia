@@ -66,7 +66,8 @@ function slugToQuery(slug: string) {
   return mapping[slug] || slug.replace(/-/g, ' ')
 }
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+export async function generateMetadata(props: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const params = await props.params;
   const title = `Destinos: ${params.slug.replace(/-/g,' ')}`
   const url = `https://hospelia.co/destinos/${params.slug}`
   return { title, description: `Explora propiedades en ${title}`, alternates: { canonical: url } }

@@ -1,4 +1,4 @@
-import { WasiProperty, WasiPropertiesResponse } from '@/services/wasi';
+import { WasiProperty, WasiPropertiesResponse, wasiService } from '@/services/wasi';
 
 // Interfaces adaptadas para la aplicación Hospelia
 export interface Property {
@@ -209,32 +209,39 @@ class PropertyService {
    */
   async getAllProperties(): Promise<Property[]> {
     try {
-      
-      // Usar nuestro endpoint API en lugar de llamar directamente a Wasi
-      const response = await fetch('/api/wasi/properties?take=100&order=desc&order_by=created_at', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      let wasiProperties: WasiProperty[] = [];
 
-      if (!response.ok) {
-        throw new Error(`Error al obtener propiedades: ${response.status}`);
+      if (typeof window === 'undefined') {
+        const response = await wasiService.searchProperties({
+          take: 100,
+          order: 'desc',
+          order_by: 'created_at'
+        });
+        const propertyKeys = Object.keys(response).filter(key => !isNaN(parseInt(key)));
+        wasiProperties = propertyKeys.map(key => response[key] as WasiProperty);
+      } else {
+        const response = await fetch('/api/wasi/properties?take=100&order=desc&order_by=created_at', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`Error al obtener propiedades: ${response.status}`);
+        }
+
+        const apiResponse = await response.json();
+        
+        if (!apiResponse.success) {
+          throw new Error(`Error en API: ${apiResponse.error || 'Error desconocido'}`);
+        }
+
+        const wasiResponse: WasiPropertiesResponse = apiResponse.data;
+        const propertyKeys = Object.keys(wasiResponse).filter(key => !isNaN(parseInt(key)));
+        wasiProperties = propertyKeys.map(key => wasiResponse[key] as WasiProperty);
       }
 
-      const apiResponse = await response.json();
-      
-      // Verificar si la respuesta tiene el formato esperado
-      if (!apiResponse.success) {
-        throw new Error(`Error en API: ${apiResponse.error || 'Error desconocido'}`);
-      }
-
-      // Extraer propiedades del objeto de respuesta
-      const wasiResponse: WasiPropertiesResponse = apiResponse.data;
-      const propertyKeys = Object.keys(wasiResponse).filter(key => !isNaN(parseInt(key)));
-      const wasiProperties = propertyKeys.map(key => wasiResponse[key] as WasiProperty);
-
-      // Convertir al formato de la aplicación
       const properties = wasiProperties.map(wp => this.convertWasiToProperty(wp));
       
       return properties;
@@ -423,27 +430,39 @@ class PropertyService {
    */
   async getAllZones(): Promise<Zone[]> {
     try {
-      
-      const response = await fetch('/api/wasi/properties?scope=3&take=100&order=desc&order_by=created_at', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      let wasiProperties: WasiProperty[] = [];
 
-      if (!response.ok) {
-        throw new Error(`Error al obtener propiedades para zonas: ${response.status}`);
+      if (typeof window === 'undefined') {
+        const response = await wasiService.searchProperties({
+           scope: 3,
+           take: 100,
+           order: 'desc',
+           order_by: 'created_at'
+        });
+        const propertyKeys = Object.keys(response).filter(key => !isNaN(parseInt(key)));
+        wasiProperties = propertyKeys.map(key => response[key] as WasiProperty);
+      } else {
+        const response = await fetch('/api/wasi/properties?scope=3&take=100&order=desc&order_by=created_at', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`Error al obtener propiedades para zonas: ${response.status}`);
+        }
+
+        const apiResponse = await response.json();
+        
+        if (!apiResponse.success) {
+          throw new Error(`Error en API: ${apiResponse.error || 'Error desconocido'}`);
+        }
+
+        const wasiResponse: WasiPropertiesResponse = apiResponse.data;
+        const propertyKeys = Object.keys(wasiResponse).filter(key => !isNaN(parseInt(key)));
+        wasiProperties = propertyKeys.map(key => wasiResponse[key] as WasiProperty);
       }
-
-      const apiResponse = await response.json();
-      
-      if (!apiResponse.success) {
-        throw new Error(`Error en API: ${apiResponse.error || 'Error desconocido'}`);
-      }
-
-      const wasiResponse: WasiPropertiesResponse = apiResponse.data;
-      const propertyKeys = Object.keys(wasiResponse).filter(key => !isNaN(parseInt(key)));
-      const wasiProperties = propertyKeys.map(key => wasiResponse[key] as WasiProperty);
 
       // Extraer zonas únicas
       const zonesMap = new Map<string, Zone>();

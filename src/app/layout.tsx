@@ -1,5 +1,5 @@
 import Script from "next/script";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { LocaleProvider } from "@/contexts/LocaleContext";
@@ -21,6 +21,11 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
   display: "swap",
 });
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+};
 
 export const metadata: Metadata = {
   title: "Hospelia.co | Alojamientos en Cali con apartamentos amoblados",
@@ -53,10 +58,6 @@ export const metadata: Metadata = {
       "es-CO": "https://hospelia.co/",
       "x-default": "https://hospelia.co/",
     },
-  },
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
   },
   twitter: {
     card: "summary_large_image",
