@@ -1,12 +1,15 @@
 import Link from 'next/link';
 import VisitCounter from '@/app/components/VisitCounter';
 import { DestProperty } from '@/utils/propertyUtils';
+import HeartIcon from '@/app/components/HeartIcon';
 
 interface PropertyCardProps {
   property: DestProperty;
+  isFavorite?: boolean;
+  onToggleFavorite?: () => void;
 }
 
-export default function PropertyCard({ property }: PropertyCardProps) {
+export default function PropertyCard({ property, isFavorite, onToggleFavorite }: PropertyCardProps) {
   const {
     codigo_unico,
     titulo,
