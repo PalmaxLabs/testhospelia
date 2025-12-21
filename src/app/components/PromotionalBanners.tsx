@@ -7,16 +7,7 @@ const bannersData = [
   {
     src: '/img/banners/banner-encuentra-cali.png',
     alt: 'Encuentra el Alojamiento Ideal en Cali Hospelia',
-    // Podríamos añadir texto superpuesto aquí si no fuera parte de la imagen
-  },
-  {
-    src: '/img/banners/banner-sientete-casa.png',
-    alt: 'Siéntete como en casa con Hospelia',
-  },
-  {
-    src: '/img/banners/banner-apartamentos-amoblados.png',
-    alt: 'Apartamentos amoblados con amenidades increíbles en Hospelia',
-  },
+  }// Podríamos añadir texto superpuesto aquí si no fuera parte de la imagen
 ];
 
 const PromotionalBanners = () => {
@@ -30,7 +21,7 @@ const PromotionalBanners = () => {
   };
 
   return (
-    <section className="py-10 md:py-16 bg-white">
+    <section className="py-10 md:py-16 bg-black">
       <div className="container mx-auto px-4 space-y-8 md:space-y-12">
         {bannersData.map((banner, index) => (
           <motion.div

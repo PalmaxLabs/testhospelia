@@ -28,14 +28,14 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Hospelia.co | Alojamientos en Cali con apartamentos amoblados",
+  title: "Alojamientos en Cali | Alojamientos amoblados y hospedaje seguro | Hospelia.co",
   description:
-    "Encuentra alojamientos y apartamentos amoblados en Cali: ubicaciones céntricas, comodidades completas y reservas seguras para estancias cortas y largas.",
+    "Encuentra alojamientos en Cali: apartamentos amoblados verificados, hospedaje céntrico y reservas seguras. Estancias cortas y largas facilísimas. Reserva ahora.",
   keywords: "apartamentos, alojamientos, Cali, amoblados, hospedaje, estancias cortas, reservas",
   openGraph: {
-    title: "Hospelia.co | Alojamientos en Cali",
+    title: "Alojamientos en Cali: Apartamentos Amoblados y Reservas Seguras",
     description:
-      "Encuentra alojamientos y apartamentos amoblados en Cali: ubicaciones céntricas, comodidades completas y reservas seguras.",
+      "Alojamientos en Cali: apartamentos amoblados con reservas seguras, ideales para estancias cortas y largas.",
     type: "website",
     locale: "es_CO",
     url: "https://hospelia.co/",
@@ -61,9 +61,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Hospelia.co | Alojamientos en Cali",
+    title: "Alojamientos en Cali: Apartamentos Amoblados y Reservas Seguras",
     description:
-      "Encuentra alojamientos y apartamentos amoblados en Cali: ubicaciones céntricas, comodidades completas y reservas seguras.",
+      "Alojamientos en Cali: apartamentos amoblados con reservas seguras, ideales para estancias cortas y largas.",
     images: ["https://hospelia.co/img/logo-hospelia.webp"],
     site: "@hospelia"
   }
@@ -90,7 +90,7 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://wp.hospelia.co" />
 
         <meta charSet="utf-8" />
-        <link rel="icon" href="/globe.svg" type="image/svg+xml" />
+        <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="apple-touch-icon" href="/img/logo-hospelia.webp" />
         {/* Ahrefs site verification */}
         <meta

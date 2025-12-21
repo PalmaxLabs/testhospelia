@@ -26,12 +26,14 @@ export default function Footer() {
         { name: t('footer.careers'), href: "/empleo" },
         { name: t('footer.press'), href: "/prensa" },
         { name: t('footer.help'), href: "/ayuda" },
+        { name: "Mapa del sitio", href: "/mapa-del-sitio" },
       ],
     },
     {
       title: t('footer.discover'),
       links: [
-        { name: t('footer.lodgings'), href: "/propiedades" },
+        { name: t('footer.lodgings'), href: "/alojamientos" },
+        { name: "Blog", href: "/blog" },
         { name: t('footer.experiences'), href: "/experiencias" },
       ],
     },
@@ -53,7 +55,7 @@ export default function Footer() {
     {
       title: t('footer.hosts'),
       links: [
-        { name: t('footer.become_host'), href: "/hazte-anfitrion" },
+        { name: "Convertirse en anfitrión de propiedades en Cali", href: "/hazte-anfitrion" },
         { name: t('footer.resources'), href: "/recursos-anfitrion" },
         { name: t('footer.community'), href: "/comunidad" },
         { name: t('footer.help_center'), href: "/centro-ayuda" },
@@ -95,7 +97,7 @@ export default function Footer() {
                <img src="/img/logo-hospelia.webp" alt="Hospelia" className="h-10 w-auto" />
             </div>
             <p className="text-gray-500 text-sm max-w-sm leading-relaxed mb-6">
-              {t('home.hero.subtitle')}
+              Reservas seguras para estancias cortas y largas en <strong>Alojamientos en Cali</strong>, con <strong>apartamentos amoblados</strong> y <strong>hospedaje en Cali</strong>.
             </p>
             <div className="flex space-x-4">
               {socialLinks.map((item) => (

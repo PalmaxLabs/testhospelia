@@ -60,7 +60,8 @@ export async function GET(request: NextRequest) {
       { 
         success: false, 
         error: 'Error al obtener propiedades',
-        details: error instanceof Error ? error.message : 'Error desconocido'
+        details: error instanceof Error ? error.message : 'Error desconocido',
+        stack: error instanceof Error ? error.stack : undefined
       },
       { status: 500 }
     );

@@ -6,6 +6,9 @@ import PopupReserva from './PopupReserva';
 import Image from 'next/image';
 import { trackReservationButtonClick } from '@/utils/googleAds';
 import LanguageCurrencySelector from './LanguageCurrencySelector';
+import { usePathname } from 'next/navigation';
+import { FaBars, FaUserCircle, FaGlobe, FaTimes, FaWhatsapp, FaTh, FaHome, FaInfoCircle, FaEnvelope, FaPhone, FaStar } from 'react-icons/fa';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 // Componente de contador de favoritos
 const FavoritesCounter = () => {
@@ -56,65 +59,33 @@ const FavoritesCounter = () => {
   );
 };
 
-// Icono hamburguesa animado personalizado
-const HamburgerIcon = ({ isOpen }: { isOpen: boolean }) => (
-  <div className="w-7 h-7 flex flex-col justify-center items-center">
-    <motion.span
-      className="block h-0.5 w-6 bg-current mb-1.5"
-      animate={isOpen ? { rotate: 45, y: 6 } : { rotate: 0, y: 0 }}
-      transition={{ duration: 0.3 }}
-    />
-    <motion.span
-      className="block h-0.5 w-6 bg-current mb-1.5"
-      animate={isOpen ? { opacity: 0 } : { opacity: 1 }}
-      transition={{ duration: 0.3 }}
-    />
-    <motion.span
-      className="block h-0.5 w-6 bg-current"
-      animate={isOpen ? { rotate: -45, y: -6 } : { rotate: 0, y: 0 }}
-      transition={{ duration: 0.3 }}
-    />
-  </div>
-);
-
 export default function Header() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
-  const [isVisible, setIsVisible] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const { language, setLanguage, t } = useLanguage();
+  const pathname = usePathname();
+
+  const isHomePage = pathname === '/';
 
   // Controlar el scroll para efectos visuales y comportamiento flotante
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-      
-      // Determinar si está scrolled (para efectos visuales)
-      if (currentScrollY > 50) {
-        setScrolled(true);
+      if (currentScrollY > 10) {
+        setIsScrolled(true);
       } else {
-        setScrolled(false);
+        setIsScrolled(false);
       }
-
-      // Determinar visibilidad del navbar (comportamiento flotante)
-      if (currentScrollY < lastScrollY || currentScrollY < 100) {
-        // Scrolling up o cerca del top
-        setIsVisible(true);
-      } else if (currentScrollY > lastScrollY && currentScrollY > 100) {
-        // Scrolling down y lejos del top
-        setIsVisible(false);
-      }
-
-      setLastScrollY(currentScrollY);
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [lastScrollY]);
+  }, []);
 
   // Prevenir scroll del body cuando el menú está abierto
   useEffect(() => {
-    if (isOpen) {
+    if (isSidebarOpen) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset';
@@ -123,207 +94,191 @@ export default function Header() {
     return () => {
       document.body.style.overflow = 'unset';
     };
-  }, [isOpen]);
-
-  const navLinks = [
-    { 
-      href: "/", 
-      label: "Inicio",
-      icon: (
-        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-        </svg>
-      )
-    },
-    { 
-      href: "/hazte-anfitrion", 
-      label: "Hazte anfitrión",
-      icon: (
-        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-        </svg>
-      )
-    },
-    { 
-      href: "/blog", 
-      label: "Blog",
-      icon: (
-        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
-        </svg>
-      )
-    }
-  ];
+  }, [isSidebarOpen]);
 
   const handleReservaClick = () => {
     trackReservationButtonClick();
     setShowPopup(true);
+    setIsSidebarOpen(false);
   };
+
+  const useDarkStyle = isScrolled || !isHomePage;
+  const textColorClass = useDarkStyle ? 'text-gray-800 hover:text-blue-600' : 'text-white/95 hover:text-white';
+  const languageButtonClass = useDarkStyle ? 'hover:bg-gray-100' : 'hover:bg-white/10';
 
   return (
     <>
-      <motion.header 
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300`}
-        initial={{ y: -100 }}
-        animate={{ y: isVisible ? 0 : -100 }}
-        transition={{ type: 'spring', stiffness: 120, damping: 20 }}
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 z-[100] bg-blue-600 text-white px-4 py-2 rounded-md shadow-lg font-bold transition-transform">
+        Saltar al contenido principal
+      </a>
+      <header 
+        className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ease-in-out border-b ${ 
+          isScrolled 
+            ? 'bg-white/70 backdrop-blur-2xl border-gray-200/50 shadow-[0_8px_32px_rgba(0,0,0,0.04)] py-3 supports-[backdrop-filter]:bg-white/60' 
+            : !isHomePage  
+              ? 'bg-white/70 backdrop-blur-md border-gray-200/50 py-4 shadow-sm' 
+              : 'bg-transparent border-transparent py-5' 
+        }`}
       >
-        <div className={`backdrop-blur-md transition-all duration-500 ${
-          scrolled 
-            ? 'bg-white/95 shadow-lg py-2' 
-            : 'bg-white/80 py-4'
-        }`}>
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center">
-              {/* Logo */}
-              <motion.div 
-                className="flex-shrink-0 flex items-center"
-                whileHover={{ scale: 1.05 }}
-                transition={{ type: 'spring', stiffness: 400, damping: 10 }}
-              >
-                <Link href="/" className="text-blue-600 font-bold text-2xl">
-                  <img src="/img/logo-hospelia.webp" alt="logo" className="w-auto h-8 sm:h-10" />
+        <div className="container mx-auto px-4 md:px-8">
+          <div className="flex items-center justify-between">
+            {/* Logo */}
+            <Link href="/" className="flex-shrink-0 flex items-center gap-2 z-50 group">
+              <div className="relative h-10 w-32 transition-transform duration-300 group-hover:scale-105">
+                <Image 
+                  src="/img/logo-hospelia.webp" 
+                  alt="Hospelia Logo" 
+                  fill 
+                  className={`object-contain object-left transition-all duration-500 ${!useDarkStyle ? 'brightness-0 invert' : ''}`} 
+                  priority 
+                />
+              </div>
+            </Link>
+            
+            {/* Right Menu */}
+            <div className="flex items-center gap-4 md:gap-8">
+              <nav role="navigation" className="hidden md:flex items-center gap-8">
+                <Link 
+                  href="/blog" 
+                  className={`text-sm font-medium transition-colors duration-300 ${textColorClass}`}
+                >
+                  {t('nav.blog')}
                 </Link>
-              </motion.div>
-              
-              {/* Menú de escritorio */}
-              <nav className="hidden md:flex space-x-8">
-                {navLinks.map((link) => (
-                  <motion.div
-                    key={link.href}
-                    whileHover={{ y: -2 }}
-                    transition={{ type: 'spring', stiffness: 300 }}
-                  >
-                    <Link 
-                      href={link.href} 
-                      className="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors duration-200"
-                    >
-                      {link.label}
-                    </Link>
-                  </motion.div>
-                ))}
+                <Link 
+                  href="/hazte-anfitrion" 
+                  className={`text-sm font-medium transition-colors duration-300 ${textColorClass}`}
+                >
+                  {t('Hazte Anfitrión')}
+                </Link>
               </nav>
               
-              {/* Favoritos, Selector de idioma/divisa y Botón CTA Desktop */}
-              <div className="hidden md:flex items-center space-x-4">
-                <FavoritesCounter />
-                <LanguageCurrencySelector />
+              <div className="flex items-center gap-3">
+                {/* Favorites Counter (Original Button) */}
+                <div className={`${useDarkStyle ? '' : 'text-white'}`}>
+                  <FavoritesCounter />
+                </div>
+                
+                {/* Desktop CTA (Original Button Logic) */}
                 <motion.button 
-                  className="px-4 lg:px-6 py-2 lg:py-3 border border-transparent rounded-full shadow-md text-sm lg:text-base font-medium text-white bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-300"
+                  className="hidden md:inline-flex px-4 lg:px-6 py-2 lg:py-3 border border-transparent rounded-full shadow-md text-sm lg:text-base font-medium text-white bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-300"
                   whileHover={{ scale: 1.05, boxShadow: "0 10px 25px -5px rgba(59, 130, 246, 0.4)" }}
                   whileTap={{ scale: 0.95 }}
                   onClick={handleReservaClick}
                 >
-                  <span className="hidden lg:inline">Reserva ahora</span>
+                  <span className="hidden lg:inline">{t('Reserva Ahora')}</span>
                   <span className="lg:hidden">Reservar</span>
                 </motion.button>
-              </div>
-              
-              {/* Favoritos móvil y hamburguesa */}
-              <div className="md:hidden flex items-center space-x-2">
-                <div className="sm:block hidden">
-                  <FavoritesCounter />
-                </div>
-                <motion.button 
-                  onClick={() => setIsOpen(!isOpen)}
-                  className="relative flex items-center justify-center p-3 rounded-full bg-white/10 backdrop-blur-sm text-gray-700 hover:text-blue-600 hover:bg-blue-50 focus:outline-none transition-all duration-200 border border-gray-200/50"
-                  whileTap={{ scale: 0.95 }}
-                  whileHover={{ scale: 1.05 }}
+                
+                {/* Mobile Menu Toggle */}
+                <button 
+                  className={`md:hidden flex items-center gap-2 px-4 py-2 rounded-full border border-gray-200/50 backdrop-blur-md bg-white/10 hover:bg-white/20 transition-all duration-300 ${textColorClass}`}
+                  onClick={() => setIsSidebarOpen(true)}
                 >
-                  <span className="sr-only">Abrir menú</span>
-                  <HamburgerIcon isOpen={isOpen} />
-                </motion.button>
+                  <FaTh size={16} />
+                  <span className="text-sm font-semibold">Menú</span>
+                </button>
               </div>
             </div>
           </div>
         </div>
-      </motion.header>
+      </header>
 
-      {/* Menú móvil de pantalla completa mejorado */}
+      {/* Mobile Fixed Contact Bar - REMOVED to avoid duplication */}
+      {/* 
+      <div className="fixed bottom-0 left-0 w-full z-[55] md:hidden bg-white border-t border-gray-200 shadow-[0_-4px_20px_rgba(0,0,0,0.1)] pb-4">
+        <div className="grid grid-cols-2 divide-x divide-gray-100">
+          <a 
+            href="tel:+573017546634"
+            className="flex items-center justify-center gap-2 py-4 active:bg-gray-50 transition-colors"
+          >
+            <FaPhone className="text-blue-600" />
+            <span className="font-bold text-gray-800 text-sm">Llama ahora</span>
+          </a>
+          <a 
+            href="https://wa.me/573017546634"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center gap-2 py-4 active:bg-gray-50 transition-colors"
+          >
+            <FaWhatsapp className="text-green-500 text-lg" />
+            <span className="font-bold text-gray-800 text-sm">WhatsApp</span>
+          </a>
+        </div>
+      </div>
+      */}
+
+      {/* Mobile Full Screen Menu */}
       <AnimatePresence>
-        {isOpen && (
-          <>
-            {/* Overlay de fondo */}
-            <motion.div
-              className="fixed inset-0 bg-gradient-to-br from-blue-900/95 via-purple-900/95 to-blue-800/95 backdrop-blur-md z-50 md:hidden"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.3 }}
-            />
+        {isSidebarOpen && (
+          <motion.div
+            initial={{ opacity: 0, x: '100%' }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: '100%' }}
+            transition={{ type: "spring", damping: 30, stiffness: 300 }}
+            className="fixed inset-0 z-[2000] md:hidden bg-white flex flex-col"
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+               <Link href="/" onClick={() => setIsSidebarOpen(false)} className="relative h-8 w-28">
+                  <Image src="/img/logo-hospelia.webp" alt="Hospelia" fill className="object-contain object-left" />
+               </Link>
+               <button 
+                 onClick={() => setIsSidebarOpen(false)}
+                 className="p-2 -mr-2 text-gray-500 hover:bg-gray-50 rounded-full transition-colors"
+               >
+                 <FaTimes size={24} />
+               </button>
+            </div>
 
-            {/* Menú */}
-            <motion.nav
-              className="fixed top-0 left-0 right-0 z-50 md:hidden"
-              initial={{ y: -100 }}
-              animate={{ y: 0 }}
-              exit={{ y: -100 }}
-              transition={{ type: 'spring', stiffness: 120, damping: 15 }}
-            >
-              <div className="backdrop-blur-md bg-white/90 shadow-lg border-b border-gray-200/50">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                  <div className="flex justify-between items-center py-3">
-                    <Link href="/" className="text-blue-600 font-bold text-xl">
-                      <img src="/img/logo-hospelia.webp" alt="logo" className="w-auto h-8" />
-                    </Link>
-                    <motion.button 
-                      onClick={() => setIsOpen(false)}
-                      className="p-3 rounded-full bg-white/10 backdrop-blur-sm text-gray-700 hover:text-blue-600 hover:bg-blue-50 focus:outline-none transition-all duration-200 border border-gray-200/50"
-                      whileTap={{ scale: 0.95 }}
-                      whileHover={{ scale: 1.05 }}
-                    >
-                      <span className="sr-only">Cerrar menú</span>
-                      <HamburgerIcon isOpen={isOpen} />
-                    </motion.button>
-                  </div>
-                </div>
-              </div>
+            {/* Scrollable Content */}
+            <div className="flex-1 overflow-y-auto p-6">
+               <div className="space-y-8">
+                  {/* Navigation Links */}
+                  <nav className="flex flex-col space-y-6">
+                     <Link href="/" onClick={() => setIsSidebarOpen(false)} className="flex items-center space-x-4 text-gray-900 font-bold text-xl group">
+                        <span className="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center group-hover:bg-blue-100 transition-colors"><FaHome size={20} /></span>
+                        <span>Inicio</span>
+                     </Link>
+                     <Link href="/blog" onClick={() => setIsSidebarOpen(false)} className="flex items-center space-x-4 text-gray-900 font-bold text-xl group">
+                        <span className="w-10 h-10 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center group-hover:bg-purple-100 transition-colors"><FaInfoCircle size={20} /></span>
+                        <span>{t('nav.blog')}</span>
+                     </Link>
+                     <Link href="/hazte-anfitrion" onClick={() => setIsSidebarOpen(false)} className="flex items-center space-x-4 text-gray-900 font-bold text-xl group">
+                        <span className="w-10 h-10 rounded-full bg-green-50 text-green-600 flex items-center justify-center group-hover:bg-green-100 transition-colors"><FaHome size={20} /></span>
+                        <span>{t('nav.host')}</span>
+                     </Link>
+                     <Link href="/favoritos" onClick={() => setIsSidebarOpen(false)} className="flex items-center space-x-4 text-gray-900 font-bold text-xl group">
+                        <span className="w-10 h-10 rounded-full bg-red-50 text-red-600 flex items-center justify-center group-hover:bg-red-100 transition-colors"><FaStar size={20} /></span>
+                        <span>{t('nav.favorites')}</span>
+                     </Link>
+                  </nav>
+               </div>
+            </div>
 
-              <div className="bg-white/95 backdrop-blur-md shadow-xl">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-6">
-                  <div className="grid grid-cols-1 gap-2 pt-4">
-                    {navLinks.map((link) => (
-                      <motion.div
-                        key={link.href}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.2 }}
-                      >
-                        <Link 
-                          href={link.href}
-                          onClick={() => setIsOpen(false)}
-                          className="flex items-center justify-between px-4 py-3 rounded-lg hover:bg-blue-50 transition-colors text-gray-700"
-                        >
-                          <span className="text-base font-medium">{link.label}</span>
-                          <svg className="w-5 h-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                          </svg>
-                        </Link>
-                      </motion.div>
-                    ))}
-                  </div>
-
-                  {/* CTA móvil */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.2 }}
-                    className="mt-4 px-4"
+            {/* Footer Actions */}
+            <div className="p-6 border-t border-gray-100 bg-transparent-50/50 pb-8">
+               <div className="grid grid-cols-2 gap-4">
+                  <button 
+                    onClick={handleReservaClick}
+                    className="flex flex-col items-center justify-center p-4 bg-green-500 text-white rounded-2xl shadow-lg shadow-blue-200 active:scale-95 transition-all"
                   >
-                    <button 
-                      onClick={() => { setIsOpen(false); handleReservaClick(); }}
-                      className="w-full px-4 py-3 rounded-full bg-gradient-to-r from-blue-500 to-blue-700 text-white font-medium shadow-md hover:from-blue-600 hover:to-blue-800 transition-all"
-                    >
-                      Reservar ahora
-                    </button>
-                  </motion.div>
-                </div>
-              </div>
-            </motion.nav>
-          </>
+                    <FaWhatsapp size={24} className="mb-2" />
+                    <span className="font-bold text-sm">{t('nav.bookNow')}</span>
+                  </button>
+                  <a 
+                    href="tel:+573017546634"
+                    className="flex flex-col items-center justify-center p-4 bg-white border border-gray-200 text-gray-900 rounded-2xl shadow-sm active:bg-gray-50 transition-all"
+                  >
+                    <FaPhone size={24} className="mb-2 text-gray-900" />
+                    <span className="font-bold text-sm">Llamar</span>
+                  </a>
+               </div>
+            </div>
+          </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Popup de reserva - envuelto en Suspense para cumplir con useSearchParams */}
+      {/* Popup de reserva (Original Component Logic) */}
       <React.Suspense fallback={null}>
         <PopupReserva isOpen={showPopup} onClose={() => setShowPopup(false)} popupId={22494} />
       </React.Suspense>

@@ -19,10 +19,20 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url)
     const slug = searchParams.get('slug') || ''
     if (!slug) {
-      return NextResponse.json({ error: 'slug is required' }, { status: 400 })
+      const resp = NextResponse.json({ imageUrl: '/zona-default.jpg' })
+      resp.headers.set('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=600')
+      return resp
     }
     const q = slugToQuery(slug)
     const res = await wasiService.searchPropertiesByText(q, { scope: 3, id_availability: 1, take: 12, order: 'desc', order_by: 'created_at' })
+    
+    if (!res || typeof res !== 'object') {
+      console.error('❌ Wasi response invalid:', res);
+      const resp = NextResponse.json({ imageUrl: '/zona-default.jpg' })
+      resp.headers.set('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=600')
+      return resp
+    }
+
     const keys = Object.keys(res).filter(k => !isNaN(parseInt(k)))
     let imageUrl = '/zona-default.jpg'
     for (const k of keys) {
@@ -37,7 +47,10 @@ export async function GET(req: NextRequest) {
     resp.headers.set('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=600')
     return resp
   } catch (e: any) {
-    return NextResponse.json({ error: 'failed', details: e?.message }, { status: 500 })
+    console.error('❌ Error en API cover:', e);
+    const resp = NextResponse.json({ imageUrl: '/zona-default.jpg' })
+    resp.headers.set('Cache-Control', 'public, s-maxage=120, stale-while-revalidate=600')
+    return resp
   }
 }
 

@@ -323,13 +323,17 @@ class WasiService {
     searchText: string,
     additionalFilters: WasiPropertySearchParams = {}
   ): Promise<WasiPropertiesResponse> {
-    return this.searchProperties({
-      ...additionalFilters,
+    const defaults: WasiPropertySearchParams = {
       match: searchText,
       id_availability: 1, // Disponible
       scope: 3, // Todas las propiedades
       order: 'desc',
       order_by: 'visits' // Ordenar por popularidad
+    };
+    
+    return this.searchProperties({
+      ...defaults,
+      ...additionalFilters
     });
   }
 

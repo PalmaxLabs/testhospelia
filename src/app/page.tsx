@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef, useMemo, useCallback, lazy, Suspense } from "react";
 import Header from "./components/Header";
+import InternalLinksSection from "./components/InternalLinksSection";
 import Footer from "./components/Footer";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
@@ -22,14 +23,20 @@ import { useRecommendations } from '@/contexts/RecommendationContext';
 import PropertyCard from "@/components/PropertyCard";
 import PropertyListItem from "@/components/PropertyListItem";
 import { toDestProperty } from "@/utils/propertyUtils";
+import NeighborhoodGuide from "./components/NeighborhoodGuide";
+import TravelGuides from "./components/TravelGuides";
+import MockPropertyGrid from "./components/MockPropertyGrid";
+import TrustedBy from "./components/TrustedBy";
+import HeroCarousel from "./components/HeroCarousel";
+import InteractiveSearch from "./components/InteractiveSearch";
+import StickyCTA from "./components/StickyCTA";
 
 // Lazy loading para componentes no críticos
 const BlogSection = lazy(() => import("./components/BlogSection"));
 const Testimonials = lazy(() => import("./components/Testimonials"));
 const FAQ = lazy(() => import("./components/FAQ"));
 const Chatbot = lazy(() => import("./components/Chatbot"));
-const AIRecommendations = lazy(() => import("./components/AIRecommendations"));
-const TrustedBy = lazy(() => import("./components/TrustedBy"));
+// const TrustedBy = lazy(() => import("./components/TrustedBy"));
 
 // Componente de loading optimizado
 const LazyComponentLoader = () => (
@@ -139,7 +146,7 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [total, setTotal] = useState(0);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [viewMode, setViewMode] = useState<'list' | 'grid'>('grid');
+  const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
   const { favorites, toggleFavorite: basToggleFavorite } = useFavorites();
 
   // Wrapper para toggleFavorite que incluye tracking
@@ -376,25 +383,17 @@ export default function Home() {
     <div className="bg-white min-h-screen">
       <Header />
 
-      <div className="relative w-full h-[90vh] min-h-[600px] flex flex-col justify-center items-center text-center px-4 sm:px-6 lg:px-8 pt-32 pb-12 overflow-hidden">
-        {/* Background Image with Parallax Effect */}
-        <div className="absolute inset-0 z-0">
-          <Image
-            src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=2070&auto=format&fit=crop"
-            alt="Luxury Stay in Cali"
-            fill
-            className="object-cover brightness-[0.4]"
-            priority
-          />
-        </div>
+      <div className="relative w-full min-h-[90vh] flex flex-col justify-center items-center text-center px-4 sm:px-6 lg:px-8 pt-24 pb-12 overflow-hidden">
+        {/* Background Carousel */}
+        <HeroCarousel />
 
-        <div className="relative z-10 max-w-5xl mx-auto flex flex-col items-center">
+        <div className="relative z-10 max-w-5xl mx-auto flex flex-col items-center w-full">
           
           <motion.div 
             initial={{ opacity: 0, y: 30 }} 
             animate={{ opacity: 1, y: 0 }} 
             transition={{ duration: 0.8 }}
-            className="flex flex-col items-center"
+            className="flex flex-col items-center w-full"
           >
             <div className="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-white/10 border border-white/20 text-white text-sm font-semibold mb-8 backdrop-blur-md shadow-lg">
               <span className="relative flex h-2 w-2">
@@ -404,280 +403,49 @@ export default function Home() {
               #1 en Alojamientos Corporativos en Cali
             </div>
             
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-tight mb-8 tracking-tight">
-              {t('home.hero.title')} <br className="hidden sm:block" />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-300 to-cyan-300">
-                {t('home.hero.highlight')}
-              </span>
+            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold text-white leading-tight mb-8 tracking-tight drop-shadow-lg">
+              Encuentra tu alojamiento en Cali <br className="hidden md:block" />
+              <span className="text-blue-400">con verificación y reservas seguras</span>
             </h1>
-            
-            <p className="text-xl sm:text-2xl text-gray-200 mb-12 max-w-3xl leading-relaxed font-light">
-              {t('home.hero.subtitle')}
+
+            <p className="text-lg sm:text-xl text-blue-50 mb-12 max-w-2xl leading-relaxed drop-shadow-md">
+              Descubre apartamentos amoblados en las mejores zonas de Cali, todos equipados y listos para habitar.
             </p>
-
-            {/* Search Bar - Centered & Clean */}
-            <div className="w-full max-w-4xl bg-white rounded-full p-2 shadow-2xl flex flex-col sm:flex-row items-center gap-2 border border-gray-100">
-              
-              {/* Destino */}
-              <div className="w-full sm:flex-1 px-6 py-3 border-b sm:border-b-0 sm:border-r border-gray-100 relative group text-left">
-                <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Destino</label>
-                <div className="flex items-center">
-                  <FaSearch className="text-gray-400 mr-3" />
-                  <select 
-                    id="destino" 
-                    name="destino" 
-                    value={filters.search} 
-                    onChange={(e) => handleFilterChange('search', e.target.value)} 
-                    className="w-full bg-transparent font-bold text-gray-900 outline-none cursor-pointer appearance-none text-base truncate"
-                  >
-                    <option value="">Cali, Colombia</option>
-                    <option value="Cali">Cali - Zona Sur</option>
-                    <option value="Cali">Cali - Zona Oeste</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* Habitaciones */}
-              <div className="w-full sm:flex-1 px-6 py-3 border-b sm:border-b-0 sm:border-r border-gray-100 relative group text-left">
-                <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Espacio</label>
-                <select 
-                  id="habitaciones" 
-                  name="habitaciones" 
-                  value={filters.bedrooms || ''} 
-                  onChange={(e) => handleFilterChange('bedrooms', e.target.value ? parseInt(e.target.value) : undefined)} 
-                  className="w-full bg-transparent font-bold text-gray-900 outline-none cursor-pointer appearance-none text-base"
-                >
-                  <option value="">Cualquier tamaño</option>
-                  <option value="1">1 Habitación</option>
-                  <option value="2">2 Habitaciones</option>
-                  <option value="3">3+ Habitaciones</option>
-                </select>
-              </div>
-
-              {/* Presupuesto */}
-              <div className="w-full sm:flex-1 px-6 py-3 relative group text-left">
-                <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Presupuesto</label>
-                <select 
-                  id="presupuesto" 
-                  name="presupuesto" 
-                  value={filters.min_price === 2800000 && filters.max_price === 3600000 ? '2800000-3600000' : filters.min_price === 4000000 ? '4000000+' : ''} 
-                  onChange={(e) => { const value = e.target.value; if (value === '2800000-3600000') { handleFilterChange('min_price', 2800000); handleFilterChange('max_price', 3600000); } else if (value === '4000000+') { handleFilterChange('min_price', 4000000); handleFilterChange('max_price', undefined); } else { handleFilterChange('min_price', undefined); handleFilterChange('max_price', undefined); } }} 
-                  className="w-full bg-transparent font-bold text-gray-900 outline-none cursor-pointer appearance-none text-base"
-                >
-                  <option value="">Cualquier precio</option>
-                  <option value="2800000-3600000">$2.8M - $3.6M</option>
-                  <option value="4000000+">$4.0M+</option>
-                </select>
-              </div>
-
-              <motion.button 
-                whileHover={{ scale: 1.05 }} 
-                whileTap={{ scale: 0.95 }} 
-                onClick={() => { const s = document.querySelector('[data-results-section]'); if (s) s.scrollIntoView({ behavior: 'smooth' }); }} 
-                className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold p-4 rounded-full transition-all shadow-lg flex items-center justify-center gap-2 min-w-[60px]"
-              >
-                <FaSearch className="text-xl" />
-                <span className="sm:hidden">Buscar</span>
-              </motion.button>
-            </div>
             
-            {/* Trust Indicators */}
-            <div className="mt-12 flex flex-wrap justify-center gap-4 sm:gap-8 text-sm font-medium text-white/80">
-              <div className="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full backdrop-blur-sm">
-                <FaCheckCircle className="text-green-400" /> Propiedades Verificadas
-              </div>
-              <div className="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full backdrop-blur-sm">
-                <FaShieldAlt className="text-blue-400" /> Pagos 100% Seguros
-              </div>
-              <div className="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full backdrop-blur-sm">
-                <FaStar className="text-yellow-400" /> Calificación 4.9/5
-              </div>
-            </div>
-
-          </motion.div>
-        </div>
-      </div>
-
-      {/* Hero Section con slider de banners y filtros estilo Airbnb */}
-      <div className="hidden relative pt-24 sm:pt-20 lg:pt-24 pb-8 sm:pb-12 lg:pb-16 hero-gradient">
-        
-            {/* Overlay oscuro para legibilidad */}
-            <div className="absolute inset-0 bg-black/30" />
-          
-
-        {/* Contenido del hero - Mejorado para móvil */}
-        <div className="relative z-10 flex flex-col items-center justify-center min-h-[45vh] sm:min-h-[50vh] px-4 sm:px-6 lg:px-8">
-          {/* Título principal */}
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-center mb-8"
-          >
-            <div className="inline-flex items-center px-6 py-3 bg-white/20 backdrop-blur-sm border border-white/30 rounded-full text-white/90 text-sm font-semibold mb-6">
-              ✨ Encuentra tu hogar perfecto en Cali
-            </div>
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-4 leading-tight">
-              {t('home.hero.title')} <span className="text-blue-300">{t('home.hero.highlight')}</span>
-            </h1>
-            <p className="text-base sm:text-lg lg:text-xl text-white/90 max-w-3xl mx-auto leading-relaxed">
-              {t('home.hero.subtitle')}
-            </p>
-          </motion.div>
-
-          {/* Box de filtros estilo Airbnb */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="relative mx-auto max-w-4xl w-full"
-          >
-            {/* Backdrop con blur */}
-            <div className="absolute inset-0 bg-white/20 backdrop-blur-md rounded-full shadow-2xl" />
-            
-            {/* Contenedor principal */}
-            <div className="relative bg-white/95 backdrop-blur-sm rounded-2xl lg:rounded-full shadow-2xl border border-gray-200/50 p-2">
-              <div className="flex flex-col lg:flex-row items-center gap-2 lg:gap-0">
-                
-                {/* Campo Dónde */}
-                <div className="flex-1 px-4 sm:px-6 py-3 sm:py-4 hover:bg-gray-50/80 rounded-xl lg:rounded-full transition-colors cursor-pointer group w-full lg:w-auto">
-                  <div className="space-y-1">
-                    <label className="text-xs font-bold text-gray-900 uppercase tracking-wide bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">
-                      {t('home.search.where')}
-                    </label>
-                                          <select
-                        value={filters.search}
-                        onChange={(e) => handleFilterChange("search", e.target.value)}
-                        className="w-full text-sm font-medium text-gray-800 bg-transparent border-none outline-none cursor-pointer mobile-select"
-                      >
-                      <option value="">Explora destinos</option>
-                      <option value="Cali">Cali</option>
-                    </select>
-                  </div>
-                </div>
-
-                {/* Separador */}
-                <div className="hidden lg:block w-px h-8 bg-gray-300/70" />
-
-                {/* Campo Habitaciones */}
-                <div className="flex-1 px-4 sm:px-6 py-3 sm:py-4 hover:bg-gray-50/80 rounded-xl lg:rounded-full transition-colors cursor-pointer group w-full lg:w-auto">
-                  <div className="space-y-1">
-                    <label className="text-xs font-bold text-gray-900 uppercase tracking-wide bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">
-                      Habitaciones
-                    </label>
-                                          <select
-                        value={filters.bedrooms || ""}
-                        onChange={(e) => handleFilterChange("bedrooms", e.target.value ? parseInt(e.target.value) : undefined)}
-                        className="w-full text-sm font-medium text-gray-800 bg-transparent border-none outline-none cursor-pointer mobile-select"
-                      >
-                      <option value="">¿Cuántas?</option>
-                      <option value="1">1 habitación</option>
-                      <option value="2">2 habitaciones</option>
-                      <option value="3">3+ habitaciones</option>
-                    </select>
-                  </div>
-                </div>
-
-                {/* Separador */}
-                <div className="hidden lg:block w-px h-8 bg-gray-300/70" />
-
-                {/* Campo Presupuesto */}
-                <div className="flex-1 px-4 sm:px-6 py-3 sm:py-4 hover:bg-gray-50/80 rounded-xl lg:rounded-full transition-colors cursor-pointer group w-full lg:w-auto">
-                  <div className="space-y-1">
-                    <label className="text-xs font-bold text-gray-900 uppercase tracking-wide bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">
-                      Presupuesto
-                    </label>
-                    <select
-                      value={
-                        filters.min_price === 2800000 && filters.max_price === 3600000 
-                          ? "2800000-3600000" 
-                          : filters.min_price === 4000000 
-                          ? "4000000+" 
-                          : ""
-                      }
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        if (value === "2800000-3600000") {
-                          handleFilterChange("min_price", 2800000);
-                          handleFilterChange("max_price", 3600000);
-                        } else if (value === "4000000+") {
-                          handleFilterChange("min_price", 4000000);
-                          handleFilterChange("max_price", undefined);
-                        } else {
-                          handleFilterChange("min_price", undefined);
-                          handleFilterChange("max_price", undefined);
-                        }
-                      }}
-                      className="w-full text-sm font-medium text-gray-800 bg-transparent border-none outline-none cursor-pointer appearance-none"
-                    >
-                      <option value="">¿Cuánto?</option>
-                      <option value="2800000-3600000">$2.8M - $3.6M</option>
-                      <option value="4000000+">$4.0M+</option>
-                    </select>
-                  </div>
-                </div>
-
-                {/* Separador */}
-                <div className="hidden lg:block w-px h-8 bg-gray-300/70" />
-
-                {/* Botón de búsqueda */}
-                <motion.button
-                  onClick={() => {
-                    // Scroll hacia los resultados
-                    const resultsSection = document.querySelector('[data-results-section]');
-                    if (resultsSection) {
-                      resultsSection.scrollIntoView({ behavior: 'smooth' });
-                    }
+            <div className="w-full mb-12">
+               <InteractiveSearch 
+                  filters={filters} 
+                  handleFilterChange={handleFilterChange}
+                  onSearch={() => {
+                    const s = document.querySelector('[data-results-section]');
+                    if (s) s.scrollIntoView({ behavior: 'smooth' });
                   }}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="mt-3 lg:mt-0 lg:ml-2 w-full lg:w-auto bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white p-3 lg:p-4 rounded-xl lg:rounded-full shadow-lg hover:shadow-xl transition-all duration-200"
-                >
-                  <svg 
-                    xmlns="http://www.w3.org/2000/svg" 
-                    viewBox="0 0 32 32" 
-                    className="w-4 h-4 lg:mr-0 sm:mr-2"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  >
-                    <path d="M13 24a11 11 0 1 0 0-22 11 11 0 0 0 0 22zm8-3 9 9" />
-                  </svg>
-                  <span className="lg:hidden sm:inline text-sm font-semibold">Buscar</span>
-                </motion.button>
-              </div>
+               />
             </div>
+
+             <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => {
+                const s = document.querySelector('[data-results-section]');
+                if (s) s.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="mt-4 bg-white/20 hover:bg-white/30 text-white font-semibold py-3 px-8 rounded-full backdrop-blur-md transition-colors border border-white/30"
+            >
+              Ver todas las propiedades
+            </motion.button>
+
           </motion.div>
         </div>
       </div>
 
       <div className="">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">Explora destinos</h2>
-            <Link href="/destinos" className="text-blue-600 font-semibold">Ver todos</Link>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <Link href="/destinos/apartamentos-en-el-sur-de-cali" className="group relative rounded-2xl overflow-hidden bg-gray-100 h-40">
-              <DestinationCover slug="apartamentos-en-el-sur-de-cali" title="Sur de Cali" />
-              <div className="absolute inset-0 bg-black/20" />
-              <div className="absolute bottom-3 left-3 text-white font-semibold">Sur de Cali</div>
-            </Link>
-            <Link href="/destinos/apartamentos-por-dias-en-cali" className="group relative rounded-2xl overflow-hidden bg-gray-100 h-40">
-              <DestinationCover slug="apartamentos-por-dias-en-cali" title="Por días" />
-              <div className="absolute inset-0 bg-black/20" />
-              <div className="absolute bottom-3 left-3 text-white font-semibold">Por días</div>
-            </Link>
-            <Link href="/destinos/apartamentos-en-bochalema" className="group relative rounded-2xl overflow-hidden bg-gray-100 h-40">
-              <DestinationCover slug="apartamentos-en-bochalema" title="Bochalema" />
-              <div className="absolute inset-0 bg-black/20" />
-              <div className="absolute bottom-3 left-3 text-white font-semibold">Bochalema</div>
-            </Link>
-            <Link href="/destinos/apartamentos-cerca-de-univalle" className="group relative rounded-2xl overflow-hidden bg-gray-100 h-40">
-              <DestinationCover slug="apartamentos-cerca-de-univalle" title="Cerca de Univalle" />
-              <div className="absolute inset-0 bg-black/20" />
-              <div className="absolute bottom-3 left-3 text-white font-semibold">Cerca de Univalle</div>
-            </Link>
+          <div className="mb-6">
+            <section>
+              <h2 className="text-2xl font-bold text-gray-900">Alojamientos en Cali</h2>
+              <p className="mt-2 text-gray-600">Encuentra <strong>apartamentos amoblados</strong> y hospedaje en Cali en ubicaciones céntricas con todas las comodidades. Verificados y listos para habitar.</p>
+            </section>
           </div>
         </div>
       </div>
@@ -894,7 +662,7 @@ export default function Home() {
         {/* Header con resultados */}
         <div className="mb-6">
           <h2 className="text-xl font-semibold text-gray-900 mb-1">
-            {total} {total === 1 ? "alojamiento" : "alojamientos"} en Cali
+            {total > 0 ? `${total} ${total === 1 ? "alojamiento" : "alojamientos"} en Cali` : "Alojamientos en Cali"}
           </h2>
           <p className="text-gray-600">
             Descubre lugares únicos donde hospedarte
@@ -1007,21 +775,29 @@ export default function Home() {
             )}
           </>
         ) : (
-          <div className="flex justify-center items-center min-h-[600px]">
-            <div className="text-center">
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.6, delay: 0.3 }}
-              >
-                <p className="text-gray-600 text-xl mb-2">No se encontraron propiedades</p>
-                <p className="text-gray-500 text-sm">Por favor, ajusta los filtros</p>
-              </motion.div>
+          <div className="min-h-[400px]">
+            <div className="flex justify-center items-center py-12">
+              <div className="text-center">
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.6, delay: 0.3 }}
+                >
+                  <p className="text-gray-600 text-xl mb-2">No se encontraron propiedades exactas</p>
+                  <p className="text-gray-500 text-sm">Intenta ajustar los filtros para ver más opciones</p>
+                </motion.div>
+              </div>
             </div>
+            
+            {/* Mock/Fallback Content */}
+            <MockPropertyGrid />
           </div>
         )}
       </div>
       
+      {/* Guías de Viaje Educativas */}
+      <TravelGuides />
+
       {/* Trusted By Section */}
       <Suspense fallback={<LazyComponentLoader />}>
         <TrustedBy />
@@ -1048,7 +824,7 @@ export default function Home() {
               </h2>
               
               <p className="text-lg text-blue-50 mb-8 leading-relaxed max-w-xl">
-                Sabemos que encontrar el alojamiento perfecto puede ser agotador. Deja que nuestro equipo de expertos haga el trabajo pesado por ti. Cuéntanos qué necesitas y te presentaremos opciones seleccionadas que se ajusten a tu estilo.
+                Nuestro equipo de expertos está listo para ayudarte a encontrar el hogar perfecto. Contáctanos y consigue exactamente lo que buscas.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4">
@@ -1086,7 +862,7 @@ export default function Home() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                   </svg>
                 </div>
-                <h3 className="text-white font-semibold text-lg mb-2">Búsqueda Dedicada</h3>
+                <h3 className="text-white font-semibold text-lg mb-2">Búsqueda personalizada para alojamientos en Cali</h3>
                 <p className="text-blue-100 text-sm">Rastreamos el mercado para encontrar joyas ocultas que no están en la web.</p>
               </div>
 
@@ -1097,7 +873,7 @@ export default function Home() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
-                <h3 className="text-white font-semibold text-lg mb-2">Verificación Total</h3>
+                <h3 className="text-white font-semibold text-lg mb-2">Propiedades verificadas para estancias cortas y largas</h3>
                 <p className="text-blue-100 text-sm">Cada propiedad es inspeccionada personalmente para garantizar calidad.</p>
               </div>
 
@@ -1125,6 +901,9 @@ export default function Home() {
       <Suspense fallback={null}>
         <Chatbot />
       </Suspense>
+
+      <StickyCTA />
     </div>
   );
 }
+

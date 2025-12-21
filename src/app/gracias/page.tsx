@@ -37,7 +37,7 @@ export default function GraciasPage() {
       </section>
 
       {/* Contenido Principal */}
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 -mt-20 relative z-20 pb-20">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 -mt-10 relative z-20 pb-20">
         
         {/* Tarjeta de "Pasos Siguientes" */}
         <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-12 mb-12 border border-gray-100">

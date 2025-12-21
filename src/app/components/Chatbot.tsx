@@ -279,7 +279,7 @@ const Chatbot: React.FC = () => {
       {/* Botón del chatbot */}
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-[88px] z-50 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
+        className="fixed bottom-6 right-[88px] z-50 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hidden md:block"
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
       >

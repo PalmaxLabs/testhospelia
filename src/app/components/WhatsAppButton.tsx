@@ -47,7 +47,7 @@ const WhatsAppButton = () => {
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="fixed bottom-34 right-6 w-80 md:w-96 bg-white rounded-xl shadow-2xl p-0 overflow-hidden z-[1000]"
+            className="fixed bottom-40 md:bottom-24 right-6 w-80 md:w-96 bg-white rounded-xl shadow-2xl p-0 overflow-hidden z-[1000]"
           >
             <div className="bg-green-500 text-white p-4">
               <div className="flex items-center mb-2">
@@ -88,7 +88,7 @@ const WhatsAppButton = () => {
 
       <button
         onClick={() => setIsModalOpen(!isModalOpen)}
-        className="fixed bottom-6 right-6 bg-green-500 text-white p-4 rounded-full shadow-lg hover:bg-green-600 transition-all duration-300 ease-out z-[1001] focus:outline-none transform hover:scale-110 active:scale-100"
+        className="fixed bottom-24 md:bottom-6 right-6 bg-green-500 text-white p-4 rounded-full shadow-lg hover:bg-green-600 transition-all duration-300 ease-out z-[1001] focus:outline-none transform hover:scale-110 active:scale-100 hidden md:block"
         aria-label={isModalOpen ? "Cerrar modal de WhatsApp" : "Abrir chat de WhatsApp"}
       >
         <motion.div

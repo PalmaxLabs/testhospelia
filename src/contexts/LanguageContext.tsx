@@ -23,6 +23,8 @@ const translations = {
     'nav.favorites': 'Favoritos',
     'nav.login': 'Iniciar Sesión',
     'nav.signup': 'Registrarse',
+    'nav.bookNow': 'Reservar ahora',
+    'nav.host': 'Hazte Anfitrión',
     
     // Home
     'home.hero.title': 'Encuentra tu próximo',
@@ -139,6 +141,7 @@ const translations = {
     'nav.favorites': 'Favorites',
     'nav.login': 'Log In',
     'nav.signup': 'Sign Up',
+    'nav.bookNow': 'Book Now',
     
     // Home
     'home.hero.title': 'Find your next',

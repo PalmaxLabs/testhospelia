@@ -77,8 +77,8 @@ export default function LanguageCurrencySelector({
         </div>
 
         {/* Selector de divisa inline */}
-        <div className="flex items-center space-x-2">
-          <span className="text-sm font-bold text-white drop-shadow-lg">{t('common.currency')}:</span>
+        <div className="flex items-center space-x-2 w-full sm:w-auto justify-between sm:justify-start">
+          <span className="text-sm font-bold text-gray-900 sm:text-white sm:drop-shadow-lg">{t('common.currency')}:</span>
           <div className="flex rounded-lg border border-gray-300 overflow-hidden shadow-lg">
             {Object.entries(currencies).map(([key, curr]) => (
               <button
@@ -131,6 +131,7 @@ export default function LanguageCurrencySelector({
       <AnimatePresence>
         {isOpen && (
           <motion.div
+            id="idioma-y-moneda"
             initial={{ opacity: 0, y: -10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -10, scale: 0.95 }}

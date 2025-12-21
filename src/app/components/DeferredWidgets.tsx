@@ -3,16 +3,18 @@
 import React, { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 
-// Client-only dynamic imports to avoid Server Component SSR issues
-const WhatsAppButton = dynamic(() => import("./WhatsAppButton"), {
-  ssr: false,
-  loading: () => null,
-});
+import WhatsAppButton from "./WhatsAppButton";
 
-const Chatbot = dynamic(() => import("./Chatbot"), {
-  ssr: false,
-  loading: () => null,
-});
+// Client-only dynamic imports to avoid Server Component SSR issues
+// const WhatsAppButton = dynamic(() => import("./WhatsAppButton"), {
+//   ssr: false,
+//   loading: () => null,
+// });
+
+// const Chatbot = dynamic(() => import("./Chatbot"), {
+//   ssr: false,
+//   loading: () => null,
+// });
 
 /**
  * Defers mounting of heavy interactive widgets until after hydration
@@ -37,7 +39,6 @@ export default function DeferredWidgets() {
   return (
     <>
       <WhatsAppButton />
-      <Chatbot />
     </>
   );
 }

@@ -7,13 +7,20 @@ export const metadata: Metadata = {
   keywords: ['alojamientos en Colombia', 'alquiler de alojamientos', 'apartamentos en Cali', 'alojamientos Hospelia', 'renta de propiedades', 'venta de propiedades'],
 };
 
-export default function AlojamientosPage() {
+interface PageProps {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}
+
+export default async function AlojamientosPage(props: PageProps) {
+  const searchParams = await props.searchParams;
+  const search = typeof searchParams.search === 'string' ? searchParams.search : undefined;
+
   return (
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8 text-center">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Alojamientos
+            Alojamientos {search ? `en ${search}` : ''}
           </h1>
           <p className="text-lg text-gray-700">
             Descubre alojamientos disponibles con fotos, precios y detalles. Usa los filtros para encontrar tu lugar ideal.
@@ -24,6 +31,7 @@ export default function AlojamientosPage() {
         <WasiPropertiesList
           filters={{
             take: 12,
+            search: search,
           }}
           className="mt-8"
         />
